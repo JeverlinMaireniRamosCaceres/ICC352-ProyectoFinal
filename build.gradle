@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // javalin
+    implementation("io.javalin:javalin:7.0.1")
+
+    // thymeleaf
+    implementation("org.thymeleaf:thymeleaf:3.1.3.RELEASE")
+
+    //Librería jasypt
+    implementation 'org.jasypt:jasypt:1.9.3'
+
+    //implementation "io.javalin:javalin-rendering:7.0.1"
+    implementation "io.javalin:javalin-rendering-thymeleaf:7.0.1"
+
+    implementation("org.slf4j:slf4j-simple:2.0.17")
+
+    // MONGODB
+    implementation("org.mongodb:mongodb-driver-sync:5.1.0")
+
+    // Jackson
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+    // gRPC 
+    implementation("io.grpc:grpc-netty-shaded:1.64.0")
+    implementation("io.grpc:grpc-protobuf:1.64.0")
+    implementation("io.grpc:grpc-stub:1.64.0")
+    compileOnly("org.apache.tomcat:annotations-api:6.0.53")
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
