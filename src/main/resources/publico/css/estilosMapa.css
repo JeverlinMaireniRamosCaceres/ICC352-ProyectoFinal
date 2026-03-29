@@ -1,0 +1,182 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #00447b !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    padding: 0.85rem 1rem;
+    z-index: 1030;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.navbar .btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Mapa */
+#map {
+    height: calc(100vh - 62px);
+    width: 100%;
+    z-index: 1;
+}
+
+/* Panel lateral */
+.col-12.col-md-3.bg-white {
+    background-color: #ffffff;
+    border-left: 1px solid #dee2e6;
+}
+
+.col-12.col-md-3 .p-3 {
+    height: calc(100vh - 62px);
+    display: flex;
+    flex-direction: column;
+}
+
+.col-12.col-md-3 h5 {
+    color: #00447b;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* Lista de registros */
+#lista-puntos {
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 2px;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 6px;
+}
+
+.list-group-item:hover {
+    background-color: #f8fbff;
+    transform: translateX(2px);
+}
+
+.list-group-item h6 {
+    font-size: 0.95rem;
+}
+
+.list-group-item p {
+    color: #495057;
+}
+
+.list-group-item small {
+    font-size: 0.8rem;
+}
+
+/* Scroll bonito */
+#lista-puntos::-webkit-scrollbar {
+    width: 8px;
+}
+
+#lista-puntos::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#lista-puntos::-webkit-scrollbar-thumb {
+    background: #c7d4e2;
+    border-radius: 10px;
+}
+
+#lista-puntos::-webkit-scrollbar-thumb:hover {
+    background: #aebfd1;
+}
+
+/* Popups Leaflet */
+.leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.leaflet-popup-content {
+    margin: 10px 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.leaflet-popup-content h6 {
+    color: #00447b;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.leaflet-popup-content p {
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.leaflet-popup-tip {
+    background: #fff;
+}
+
+/* Ajustes responsive */
+@media (max-width: 767px) {
+    #map {
+        height: 50vh;
+    }
+
+    .col-12.col-md-3.bg-white {
+        border-left: none;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .col-12.col-md-3 .p-3 {
+        height: 40vh;
+        padding: 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .navbar .btn {
+        font-size: 0.85rem;
+    }
+
+    .list-group-item {
+        border-radius: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    #map {
+        height: 45vh;
+    }
+
+    .col-12.col-md-3 .p-3 {
+        height: 42vh;
+    }
+
+    .col-12.col-md-3 h5 {
+        font-size: 1rem;
+    }
+
+    .list-group-item h6 {
+        font-size: 0.9rem;
+    }
+
+    .list-group-item p,
+    .list-group-item small {
+        font-size: 0.8rem;
+    }
+}

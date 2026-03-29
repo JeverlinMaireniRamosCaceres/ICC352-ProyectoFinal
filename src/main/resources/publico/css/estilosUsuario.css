@@ -1,0 +1,124 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.navbar {
+    background-color: #00447b !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.8rem 1rem;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #00447b;
+    box-shadow: 0 0 0 0.25rem rgba(0, 68, 123, 0.1);
+}
+
+.btn-primary {
+    background-color: #00447b;
+    border-color: #00447b;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #00335d;
+    transform: translateY(-1px);
+}
+
+.table {
+    font-size: 0.95rem;
+}
+
+.table thead {
+    background-color: #f1f3f5;
+}
+
+.table th {
+    font-weight: 700;
+    color: #212529;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 999px;
+}
+
+.collapse .card {
+    border-left: 4px solid #00447b;
+}
+
+h4.text-primary {
+    font-weight: 700;
+}
+
+.btn-outline-warning,
+.btn-outline-danger {
+    border-radius: 8px;
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+
+    .btn-lg {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .table-responsive {
+        border: 0;
+    }
+
+    h4.text-primary {
+        font-size: 1.2rem;
+    }
+
+    .btn {
+        font-size: 0.95rem;
+    }
+}

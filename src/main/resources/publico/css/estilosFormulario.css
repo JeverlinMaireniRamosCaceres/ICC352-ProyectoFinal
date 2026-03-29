@@ -1,0 +1,165 @@
+body {
+    background: linear-gradient(to bottom, #f8f9fa, #eef2f7);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+.navbar {
+    background-color: #00447b !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.container {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.card {
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    border: 1px solid #f1f1f1;
+}
+
+.card-body {
+    padding: 2rem 2.25rem;
+}
+
+.card-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.form-label {
+    margin-bottom: 0.45rem;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    border-color: #0d6efd;
+}
+
+.camera-container {
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 15px auto;
+    border: 2px solid #e9ecef;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.camera-container.active {
+    border: 2px solid #0d6efd;
+}
+
+#webcam {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: scaleX(-1);
+}
+
+#canvas {
+    display: none;
+}
+
+.alert {
+    border-radius: 12px;
+    background-color: #f8fafc;
+}
+
+.geo-badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.btn-primary {
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary {
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.btn-light.btn-sm.text-muted {
+    background-color: transparent;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-light.btn-sm.text-muted:hover {
+    color: #0d6efd !important;
+    background-color: transparent;
+}
+
+#preview-container {
+    animation: fadeIn 0.3s ease;
+}
+
+.badge-pulse {
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .btn-lg {
+        padding: 15px;
+        font-size: 1.1rem;
+    }
+}
