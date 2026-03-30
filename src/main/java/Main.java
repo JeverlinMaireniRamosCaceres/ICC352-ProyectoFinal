@@ -71,6 +71,10 @@ public class Main {
             config.routes.post("/auth/registro", authControlador::registro);
 
             // FORMULARIO
+
+            config.routes.get("/formularios", ctx -> {
+                ctx.render("templates/formularios.html"); });
+
             config.routes.post("/api/formularios", formularioControlador::crear);
 
             config.routes.get("/api/formularios", formularioControlador::listarTodos);
@@ -78,6 +82,7 @@ public class Main {
             config.routes.get("/api/formularios/usuario/{usuarioId}", formularioControlador::listarPorUsuario);
             config.routes.put("/api/formularios/{id}", formularioControlador::actualizar);
             config.routes.delete("/api/formularios/{id}", formularioControlador::eliminar);
+
 
             // CRUD USUARIO
 
