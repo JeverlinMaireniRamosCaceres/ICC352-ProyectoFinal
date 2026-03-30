@@ -5,6 +5,9 @@ import dev.morphia.Datastore;
 import entidades.Usuario;
 import org.bson.Document;
 import util.MongoConexion;
+import dev.morphia.query.filters.Filters;
+import org.bson.types.ObjectId;
+import java.util.List;
 
 public class UsuarioServicio {
 
@@ -46,4 +49,37 @@ public class UsuarioServicio {
         }
         return usuario;
     }
+
+    public Usuario buscarPorId(String id) {
+        return datastore.find(Usuario.class)
+                .filter(Filters.eq("_id", new ObjectId(id)))
+                .first();
+    }
+
+    public List<Usuario> listarTodos() {
+        return datastore.find(Usuario.class).iterator().toList();
+    }
+
+    public void actualizar(String id, Usuario datosNuevos) {
+        Usuario usuario = buscarPorId(id);
+        if (usuario == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        usuario.setNombre(datosNuevos.getNombre());
+        usuario.setEmail(datosNuevos.getEmail());
+        usuario.setRol(datosNuevos.getRol());
+        if (datosNuevos.getContrasena() != null && !datosNuevos.getContrasena().isEmpty()) {
+            usuario.setContrasena(datosNuevos.getContrasena());
+        }
+        datastore.save(usuario);
+    }
+
+    public void eliminar(String id) {
+        Usuario usuario = buscarPorId(id);
+        if (usuario == null) {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        datastore.delete(usuario);
+    }
+
 }
