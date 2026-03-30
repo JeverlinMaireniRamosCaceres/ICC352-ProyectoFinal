@@ -7,14 +7,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Prueba de conexion - borrar despues
-        try {
-            util.MongoConexion.getDatastore();
-            System.out.println("Conexion exitosa a MongoDB!");
-        } catch (Exception e) {
-            System.out.println("Error de conexion: " + e.getMessage());
-        }
-
         var app = Javalin.create(config -> {
 
             // HTTP configuration
@@ -69,13 +61,16 @@ public class Main {
 
             // ------
 
+            // CONTROLADORES
             AuthControlador authControlador = new AuthControlador();
             FormularioControlador formularioControlador = new FormularioControlador();
+            UsuarioControlador usuarioControlador = new UsuarioControlador();
 
+            // LOGIN
             config.routes.post("/auth/login", authControlador::login);
             config.routes.post("/auth/registro", authControlador::registro);
 
-
+            // FORMULARIO
             config.routes.post("/api/formularios", formularioControlador::crear);
 
             config.routes.get("/api/formularios", formularioControlador::listarTodos);
@@ -83,6 +78,14 @@ public class Main {
             config.routes.get("/api/formularios/usuario/{usuarioId}", formularioControlador::listarPorUsuario);
             config.routes.put("/api/formularios/{id}", formularioControlador::actualizar);
             config.routes.delete("/api/formularios/{id}", formularioControlador::eliminar);
+
+            // CRUD USUARIO
+
+            config.routes.get("/api/usuarios", usuarioControlador::listar);
+            config.routes.get("/api/usuarios/{id}", usuarioControlador::buscarPorId);
+            config.routes.post("/api/usuarios", usuarioControlador::crear);
+            config.routes.put("/api/usuarios/{id}", usuarioControlador::actualizar);
+            config.routes.delete("/api/usuarios/{id}", usuarioControlador::eliminar);
 
         }).start();
 
