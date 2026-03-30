@@ -1,8 +1,12 @@
 package entidades;
 
+import dev.morphia.annotations.Embedded;
+
+@Embedded
 public class Posicion {
-    double latitud;
-    double longitud;
+
+    private double latitud;
+    private double longitud;
 
     public Posicion() {
     }

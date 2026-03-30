@@ -22,7 +22,7 @@ public class Formulario {
     public Formulario() {
     }
 
-    public Formulario(String nombre, String apellido, String sector, String nivelEscolar, String usuarioId, Posicion posicion, String foto, LocalDateTime fechaRegistro) {
+    public Formulario(String nombre, String apellido, String sector, String nivelEscolar, String usuarioId, Posicion posicion, String foto) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.sector = sector;

@@ -70,9 +70,19 @@ public class Main {
             // ------
 
             AuthControlador authControlador = new AuthControlador();
+            FormularioControlador formularioControlador = new FormularioControlador();
 
             config.routes.post("/auth/login", authControlador::login);
             config.routes.post("/auth/registro", authControlador::registro);
+
+
+            config.routes.post("/api/formularios", formularioControlador::crear);
+
+            config.routes.get("/api/formularios", formularioControlador::listarTodos);
+            config.routes.get("/api/formularios/{id}", formularioControlador::buscarPorId);
+            config.routes.get("/api/formularios/usuario/{usuarioId}", formularioControlador::listarPorUsuario);
+            config.routes.put("/api/formularios/{id}", formularioControlador::actualizar);
+            config.routes.delete("/api/formularios/{id}", formularioControlador::eliminar);
 
         }).start();
 
