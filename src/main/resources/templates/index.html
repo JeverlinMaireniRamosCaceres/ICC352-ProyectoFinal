@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,9 +15,9 @@
     <span class="navbar-brand h1 mb-0">PUCMM - OP | Pagina Principal </span>
 
     <div class="d-flex align-items-center">
-      <span id="user-display" class="text-white me-3 d-none d-sm-inline small">
-        Bienvenido, Admin
-      </span>
+        <span id="user-display" class="text-white me-3 d-none d-sm-inline small" th:if="${usuarioLogueado != null}"
+              th:text="'Hola, ' + ${usuarioLogueado.nombre}">
+        </span>
 
       <a href="/logout" class="btn btn-outline-light btn-sm">
         <i class="bi bi-box-arrow-right"></i> Salir

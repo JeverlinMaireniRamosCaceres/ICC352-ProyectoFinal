@@ -122,9 +122,14 @@ async function editarUsuario(id) {
         document.getElementById('tituloFormulario').textContent = 'Editar Usuario';
         document.getElementById('textoBotonGuardar').textContent = 'Actualizar Usuario';
 
-        const collapse = new bootstrap.Collapse(document.getElementById('formRegistrarUsuario'), {
-            show: true
-        });
+
+        const elemento = document.getElementById('formRegistrarUsuario');
+        const collapse = bootstrap.Collapse.getOrCreateInstance(elemento);
+
+        if (!elemento.classList.contains('show')) {
+            collapse.show();
+        }
+
     } catch (error) {
         alert('Error al obtener datos del usuario');
     }
@@ -135,4 +140,10 @@ function limpiarFormulario() {
     usuarioEditandoId = null;
     document.getElementById('tituloFormulario').textContent = 'Registrar Usuario';
     document.getElementById('textoBotonGuardar').textContent = 'Guardar Usuario';
+
+    // cerrar el formulario
+    const elemento = document.getElementById('formRegistrarUsuario');
+    const collapse = bootstrap.Collapse.getOrCreateInstance(elemento);
+    collapse.hide();
 }
+
