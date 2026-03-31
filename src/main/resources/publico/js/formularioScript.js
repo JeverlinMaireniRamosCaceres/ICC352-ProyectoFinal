@@ -86,6 +86,7 @@ function configurarFormulario() {
         }
 
         const formularioData = {
+            idLocal: crypto.randomUUID(),
             nombre: nombre,
             apellido: apellido,
             sector: sector,
@@ -94,26 +95,16 @@ function configurarFormulario() {
             posicion: {
                 latitud: latitud ? parseFloat(latitud) : 0,
                 longitud: longitud ? parseFloat(longitud) : 0
-            }
+            },
+            fechaRegistro: new Date().toISOString(),
+            sincronizado: false,
+            seleccionado: false
         };
 
         try {
-            const response = await fetch("/api/formularios", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formularioData)
-            });
+            agregarFormularioLocal(formularioData);
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.error || "Error al guardar el formulario.");
-                return;
-            }
-
-            alert("Formulario guardado correctamente.");
+            alert("Formulario guardado localmente correctamente.");
             formulario.reset();
 
             document.getElementById("latitud").value = "";
@@ -125,8 +116,8 @@ function configurarFormulario() {
             iniciarGeolocalizacion();
 
         } catch (error) {
-            console.error("Error al enviar formulario:", error);
-            alert("No se pudo conectar con el servidor.");
+            console.error("Error al guardar formulario localmente:", error);
+            alert("No se pudo guardar el formulario localmente.");
         }
     });
 }
