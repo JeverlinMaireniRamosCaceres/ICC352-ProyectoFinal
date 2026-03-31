@@ -3,6 +3,8 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import controlador.*;
 
+import java.util.Map;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -45,7 +47,7 @@ public class Main {
 
             // Redireccion index
             config.routes.get("/index", ctx -> {
-                ctx.render("templates/index.html");
+                ctx.render("templates/index.html", Map.of("usuarioLogueado", ctx.sessionAttribute("usuario")));
             });
 
             // Redireccion mapa
