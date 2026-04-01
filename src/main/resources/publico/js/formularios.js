@@ -100,6 +100,14 @@ async function cargarSincronizados() {
     const cardsContainer = document.getElementById("cards-formularios");
     const mensaje = document.getElementById("mensaje");
 
+    cardsContainer.innerHTML = `
+        <div class="col-12">
+            <div class="alert alert-light text-center shadow-sm">
+                Cargando formularios...
+            </div>
+        </div>
+    `;
+
     try {
         const response = await fetch("/api/formularios");
         const formularios = await response.json();
