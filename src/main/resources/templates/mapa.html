@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Registros</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -13,7 +14,9 @@
 
 <nav class="navbar navbar-dark shadow-sm">
     <div class="container-fluid">
-        <span class="navbar-brand h1 mb-0"><i class="bi bi-map-fill me-2"></i> Geo-Registros</span>
+        <span class="navbar-brand h1 mb-0">
+            <i class="bi bi-map-fill me-2"></i> Geo-Registros
+        </span>
         <a href="/index" class="btn btn-outline-light btn-sm">
             <i class="bi bi-house-door"></i> Inicio
         </a>
@@ -22,25 +25,22 @@
 
 <div class="container-fluid p-0">
     <div class="row g-0">
-        <div class="col-12 col-md-9">
+        <div class="col-12 col-md-8 col-lg-9">
             <div id="map"></div>
         </div>
 
-        <div class="col-12 col-md-3 bg-white shadow-sm overflow-auto" style="max-height: 100vh;">
+        <div class="col-12 col-md-4 col-lg-3 bg-white shadow-sm overflow-auto panel-lateral">
             <div class="p-3">
-                <h5 class="fw-bold border-bottom pb-2">Registros Recientes</h5>
-                <div id="lista-puntos" class="list-group list-group-flush">
-                    <div class="list-group-item list-group-item-action py-3">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1 fw-bold text-primary">Juan Pérez</h6>
-                            <small class="text-muted">10:30 AM</small>
-                        </div>
-                        <p class="mb-1 small">Sector: Los Jardines</p>
-                        <small class="text-secondary"><i class="bi bi-geo-alt"></i> 19.4501, -70.6751</small>
-                    </div>
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                    <h5 class="fw-bold mb-0">Registros Recientes</h5>
+                    <span id="contador-registros" class="badge bg-primary">0</span>
+                </div>
 
+                <div id="mensaje-mapa" class="alert d-none" role="alert"></div>
+
+                <div id="lista-puntos" class="list-group list-group-flush">
                     <div class="text-center mt-4 text-muted small">
-                        <i class="bi bi-info-circle"></i> Seleccione un marcador en el mapa para ver detalles.
+                        <i class="bi bi-hourglass-split"></i> Cargando registros...
                     </div>
                 </div>
             </div>
@@ -49,6 +49,6 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="mapa-script.js"></script>
+<script src="/js/mapa-script.js"></script>
 </body>
 </html>
