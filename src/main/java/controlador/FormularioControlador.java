@@ -5,6 +5,7 @@ import entidades.Posicion;
 import entidades.Usuario;
 import io.javalin.http.Context;
 import servicios.FormularioServicio;
+import servicios.UsuarioServicio;
 
 import java.util.List;
 import java.util.Map;
@@ -71,10 +72,21 @@ public class FormularioControlador {
     public void listarTodos(Context ctx) {
         try {
             List<Formulario> formularios = formularioServicio.listarTodos();
+            UsuarioServicio usuarioServicio = UsuarioServicio.getInstancia();
 
             List<Map<String, Object>> respuesta = formularios.stream()
                     .map(formulario -> {
                         Map<String, Object> item = new java.util.LinkedHashMap<>();
+
+                        Usuario usuario = null;
+                        String usuarioNombre = "No disponible";
+
+                        if (formulario.getUsuarioId() != null &&  !formulario.getUsuarioId().isEmpty()) {
+                            usuario = usuarioServicio.buscarPorId(formulario.getUsuarioId());
+                            if (usuario != null) {
+                                usuarioNombre = usuario.getNombre();
+                            }
+                        }
 
                         item.put("id", formulario.getId() != null ? formulario.getId().toString() : "");
                         item.put("nombre", formulario.getNombre() != null ? formulario.getNombre() : "");
@@ -82,6 +94,8 @@ public class FormularioControlador {
                         item.put("sector", formulario.getSector() != null ? formulario.getSector() : "");
                         item.put("nivelEscolar", formulario.getNivelEscolar() != null ? formulario.getNivelEscolar() : "");
                         item.put("usuarioId", formulario.getUsuarioId() != null ? formulario.getUsuarioId() : "");
+                        item.put("usuarioNombre", usuarioNombre);
+                        item.put("foto", formulario.getFoto()  != null ? formulario.getFoto() : "");
                         item.put("sincronizado", formulario.isSincronizado());
                         item.put("fechaRegistro", formulario.getFechaRegistro() != null ? formulario.getFechaRegistro().toString() : "");
                         item.put("latitud", formulario.getPosicion() != null ? formulario.getPosicion().getLatitud() : 0);

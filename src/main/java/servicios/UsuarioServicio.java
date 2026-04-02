@@ -51,9 +51,13 @@ public class UsuarioServicio {
     }
 
     public Usuario buscarPorId(String id) {
-        return datastore.find(Usuario.class)
-                .filter(Filters.eq("_id", new ObjectId(id)))
-                .first();
+        try {
+            return datastore.find(Usuario.class)
+                    .filter(Filters.eq("_id", new ObjectId(id)))
+                    .first();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public List<Usuario> listarTodos() {

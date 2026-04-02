@@ -180,3 +180,25 @@ body {
         font-size: 0.8rem;
     }
 }
+
+/* Item activo en la lista lateral */
+.item-registro.active {
+    background-color: #e7f1ff !important;
+    border: 1px solid #b6d4fe !important;
+    color: #00447b !important;
+    transform: none !important;
+}
+
+.item-registro.active h6 {
+    color: #00447b !important;
+}
+
+.item-registro.active p,
+.item-registro.active small,
+.item-registro.active i {
+    color: #495057 !important;
+}
+
+.item-registro.active:hover {
+    background-color: #dce9fb !important;
+}
