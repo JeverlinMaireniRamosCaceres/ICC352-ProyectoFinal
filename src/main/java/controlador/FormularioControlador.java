@@ -163,6 +163,7 @@ public class FormularioControlador {
                         item.put("fechaRegistro", formulario.getFechaRegistro() != null ? formulario.getFechaRegistro().toString() : "");
                         item.put("latitud", formulario.getPosicion() != null ? formulario.getPosicion().getLatitud() : 0);
                         item.put("longitud", formulario.getPosicion() != null ? formulario.getPosicion().getLongitud() : 0);
+                        item.put("foto", formulario.getFoto() != null ? formulario.getFoto() : "");
 
                         return item;
                     })

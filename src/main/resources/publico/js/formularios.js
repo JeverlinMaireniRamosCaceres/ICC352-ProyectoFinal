@@ -80,6 +80,13 @@ function cargarPendientes() {
                     <p class="mb-2"><strong>Latitud:</strong> ${formulario.posicion?.latitud ?? ""}</p>
                     <p class="mb-2"><strong>Longitud:</strong> ${formulario.posicion?.longitud ?? ""}</p>
 
+                     ${formulario.foto ? `
+                        <div class="mt-2 mb-2">
+                            <img src="${formulario.foto}" alt="Foto del registro" 
+                                 class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
+                        </div>
+                    ` : ''}
+
                     <div class="d-flex gap-2 mt-3">
                         <button class="btn btn-outline-primary btn-sm w-50" onclick="abrirModalEditarLocal('${formulario.idLocal}')">
                             <i class="bi bi-pencil-square me-1"></i> Editar
@@ -149,6 +156,14 @@ async function cargarSincronizados() {
                         <p class="mb-2"><strong>Fecha:</strong> ${formulario.fechaRegistro || ""}</p>
                         <p class="mb-2"><strong>Latitud:</strong> ${formulario.latitud ?? ""}</p>
                         <p class="mb-2"><strong>Longitud:</strong> ${formulario.longitud ?? ""}</p>
+                         
+                         ${formulario.foto ? `
+                            <div class="mt-2 mb-2">
+                                <img src="${formulario.foto}" alt="Foto del registro" 
+                                     class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
+                            </div>
+                        ` : ''}   
+                    
                     </div>
                 </div>
             `;
