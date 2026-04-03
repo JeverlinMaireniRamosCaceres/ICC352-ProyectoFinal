@@ -1,7 +1,10 @@
+import entidades.Formulario;
+import entidades.Posicion;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import controlador.*;
+import servicios.FormularioServicio;
 
 import java.util.Map;
 
@@ -85,7 +88,6 @@ public class Main {
             config.routes.put("/api/formularios/{id}", formularioControlador::actualizar);
             config.routes.delete("/api/formularios/{id}", formularioControlador::eliminar);
 
-
             // CRUD USUARIO
 
             config.routes.get("/api/usuarios", usuarioControlador::listar);
@@ -93,6 +95,41 @@ public class Main {
             config.routes.post("/api/usuarios", usuarioControlador::crear);
             config.routes.put("/api/usuarios/{id}", usuarioControlador::actualizar);
             config.routes.delete("/api/usuarios/{id}", usuarioControlador::eliminar);
+
+            // ----- WEBSOCKET -------
+            config.routes.ws("/sync", ws -> {
+                ws.onMessage(ctx -> {
+                    try {
+                        Map<String, Object> body = ctx.messageAsClass(Map.class);
+
+                        String nombre = (String) body.get("nombre");
+                        String apellido = (String) body.get("apellido");
+                        String sector = (String) body.get("sector");
+                        String nivelEscolar = (String) body.get("nivelEscolar");
+                        String foto = (String) body.get("foto");
+                        String idLocal = (String) body.get("idLocal");
+
+                        Map<String, Object> posicionMap = (Map<String, Object>) body.get("posicion");
+                        double latitud = 0;
+                        double longitud = 0;
+                        if (posicionMap != null) {
+                            latitud = Double.parseDouble(posicionMap.get("latitud").toString());
+                            longitud = Double.parseDouble(posicionMap.get("longitud").toString());
+                        }
+
+                        Posicion posicion = new Posicion(latitud, longitud);
+                        Formulario formulario = new Formulario(nombre, apellido, sector, nivelEscolar, "", posicion, foto);
+                        formulario.setIdLocal(idLocal);
+
+                        FormularioServicio.getInstancia().guardar(formulario);
+
+                        ctx.send("{\"estado\":\"OK\",\"idLocal\":\"" + idLocal + "\"}");
+
+                    } catch (Exception e) {
+                        ctx.send("{\"estado\":\"ERROR\",\"mensaje\":\"" + e.getMessage() + "\"}");
+                    }
+                });
+            });
 
         }).start();
 
