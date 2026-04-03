@@ -9,6 +9,7 @@ public class Formulario {
 
     @Id
     ObjectId id;
+    String idLocal;
     String nombre;
     String apellido;
     String sector;
@@ -112,5 +113,13 @@ public class Formulario {
 
     public void setSincronizado(boolean sincronizado) {
         this.sincronizado = sincronizado;
+    }
+
+    public String getIdLocal() {
+        return idLocal;
+    }
+
+    public void setIdLocal(String idLocal) {
+        this.idLocal = idLocal;
     }
 }
