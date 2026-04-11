@@ -14,6 +14,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         const data = await response.json();
 
         if (response.ok) {
+            localStorage.setItem("token", data.token);
             localStorage.setItem('usuario', JSON.stringify(data));
             window.location.href = '/index';
         } else {

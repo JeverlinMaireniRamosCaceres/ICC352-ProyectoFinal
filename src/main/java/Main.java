@@ -1,10 +1,13 @@
 import entidades.Formulario;
 import entidades.Posicion;
+import entidades.Usuario;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import controlador.*;
 import servicios.FormularioServicio;
+import servicios.UsuarioServicio;
+import util.JWTUtil;
 
 import java.util.Map;
 
@@ -43,11 +46,6 @@ public class Main {
                 ctx.render("templates/login.html");
             });
 
-            // Redireccion usuarios
-            config.routes.get("/usuarios", ctx -> {
-                ctx.render("templates/usuarios.html");
-            });
-
             // Redireccion index
             config.routes.get("/index", ctx -> {
                 ctx.render("templates/index.html", Map.of("usuarioLogueado", ctx.sessionAttribute("usuario")));
@@ -69,7 +67,6 @@ public class Main {
             // CONTROLADORES
             AuthControlador authControlador = new AuthControlador();
             FormularioControlador formularioControlador = new FormularioControlador();
-            UsuarioControlador usuarioControlador = new UsuarioControlador();
 
             // LOGIN
             config.routes.post("/auth/login", authControlador::login);
@@ -90,11 +87,100 @@ public class Main {
 
             // CRUD USUARIO
 
-            config.routes.get("/api/usuarios", usuarioControlador::listar);
-            config.routes.get("/api/usuarios/{id}", usuarioControlador::buscarPorId);
-            config.routes.post("/api/usuarios", usuarioControlador::crear);
-            config.routes.put("/api/usuarios/{id}", usuarioControlador::actualizar);
-            config.routes.delete("/api/usuarios/{id}", usuarioControlador::eliminar);
+            // Obtener usuario
+            config.routes.get("/usuarios", ctx -> {
+                Usuario usuario = ctx.sessionAttribute("usuario");
+
+                if (usuario == null || !usuario.getRol().equals("ADMIN")) {
+                    ctx.redirect("/");
+                    return;
+                }
+
+                var listaUsuarios = UsuarioServicio.getInstancia().listarTodos();
+
+                ctx.attribute("usuarios", listaUsuarios);
+                ctx.render("templates/usuarios.html");
+            });
+
+            // Crear usuario
+            config.routes.post("/usuarios/crear", ctx -> {
+                Usuario admin = ctx.sessionAttribute("usuario");
+
+                if (admin == null || !admin.getRol().equals("ADMIN")) {
+                    ctx.redirect("/");
+                    return;
+                }
+
+                Usuario usuario = new Usuario(
+                        ctx.formParam("nombre"),
+                        ctx.formParam("email"),
+                        ctx.formParam("contrasena"),
+                        ctx.formParam("rol")
+                );
+
+                UsuarioServicio.getInstancia().guardar(usuario);
+
+                ctx.redirect("/usuarios");
+            });
+
+            // Redirigir a editar usuario
+            config.routes.get("/usuarios/editar/{id}", ctx -> {
+                Usuario admin = ctx.sessionAttribute("usuario");
+
+                if (admin == null || !admin.getRol().equals("ADMIN")) {
+                    ctx.redirect("/");
+                    return;
+                }
+
+                String id = ctx.pathParam("id");
+
+                Usuario usuarioEditar = UsuarioServicio.getInstancia().buscarPorId(id);
+                var listaUsuarios = UsuarioServicio.getInstancia().listarTodos();
+
+                ctx.attribute("usuarios", listaUsuarios);
+                ctx.attribute("usuarioEditar", usuarioEditar);
+
+                ctx.render("templates/usuarios.html");
+            });
+
+            // Editar usuario
+            config.routes.post("/usuarios/editar/{id}", ctx -> {
+                Usuario admin = ctx.sessionAttribute("usuario");
+
+                if (admin == null || !admin.getRol().equals("ADMIN")) {
+                    ctx.redirect("/");
+                    return;
+                }
+
+                String id = ctx.pathParam("id");
+
+                Usuario datosNuevos = new Usuario(
+                        ctx.formParam("nombre"),
+                        ctx.formParam("email"),
+                        ctx.formParam("contrasena"),
+                        ctx.formParam("rol")
+                );
+
+                UsuarioServicio.getInstancia().actualizar(id, datosNuevos);
+
+                ctx.redirect("/usuarios");
+            });
+
+            // Eliminar usuario
+            config.routes.post("/usuarios/eliminar/{id}", ctx -> {
+                Usuario admin = ctx.sessionAttribute("usuario");
+
+                if (admin == null || !admin.getRol().equals("ADMIN")) {
+                    ctx.redirect("/");
+                    return;
+                }
+
+                String id = ctx.pathParam("id");
+
+                UsuarioServicio.getInstancia().eliminar(id);
+
+                ctx.redirect("/usuarios");
+            });
 
             // ----- WEBSOCKET -------
             config.routes.ws("/sync", ws -> {
@@ -130,6 +216,24 @@ public class Main {
                     }
                 });
             });
+
+            // ---------------------- JWT ---------------------
+
+            // Filtro JWT para proteger los endpoints
+            config.routes.before("/api/*", ctx -> {
+                if (ctx.method().toString().equals("OPTIONS")) return;
+
+                String header = ctx.header("Authorization");
+                if (header == null || !header.startsWith("Bearer ")) {
+                    throw new io.javalin.http.UnauthorizedResponse("Se requiere token");
+                }
+
+                String token = header.replace("Bearer ", "").trim();
+                if (!JWTUtil.esValido(token)) {
+                    throw new io.javalin.http.ForbiddenResponse("El token no es valido o expiro");
+                }
+            });
+
 
         }).start();
 

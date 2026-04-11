@@ -3,6 +3,7 @@ package controlador;
 import entidades.Usuario;
 import io.javalin.http.Context;
 import servicios.UsuarioServicio;
+import util.JWTUtil;
 
 import java.util.Map;
 
@@ -17,16 +18,16 @@ public class AuthControlador {
     public void login(Context ctx) {
         try {
             Map<String, String> body = ctx.bodyAsClass(Map.class);
-            String email = body.get("email");
-            String contrasena = body.get("contrasena");
+            Usuario usuario = usuarioServicio.autenticar(body.get("email"), body.get("contrasena"));
 
-            Usuario usuario = usuarioServicio.autenticar(email, contrasena);
+            String token = JWTUtil.generarToken(usuario.getEmail(), usuario.getRol());
 
             ctx.sessionAttribute("usuario", usuario);
             ctx.json(Map.of(
                     "mensaje", "Login exitoso",
                     "nombre", usuario.getNombre(),
-                    "rol", usuario.getRol()
+                    "rol", usuario.getRol(),
+                    "token", token
             ));
         } catch (RuntimeException e) {
             ctx.status(401).json(Map.of("error", e.getMessage()));
