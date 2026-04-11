@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Control</title>
+  <title>Panel de control</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="/css/estilosIndex.css">
@@ -36,8 +36,8 @@
           <div class="display-4 text-primary mb-3">
             <i class="bi bi-file-earmark-plus"></i>
           </div>
-          <h5 class="card-title fw-bold">Nueva Encuesta</h5>
-          <p class="card-text text-muted small">Realizar levantamiento en la zona norte con captura de GPS y foto.</p>
+          <h5 class="card-title fw-bold">Nueva encuesta</h5>
+          <p class="card-text text-muted small">Realizar levantamiento en la zona norte con captura de GPS y foto</p>
           <a href="/formulario" class="btn btn-primary w-100 py-2">Comenzar</a>
         </div>
       </div>
@@ -49,21 +49,21 @@
           <div class="display-4 text-success mb-3">
             <i class="bi bi-geo-alt"></i>
           </div>
-          <h5 class="card-title fw-bold">Mapa de Registros</h5>
-          <p class="card-text text-muted small">Visualizar la ubicación georeferencial de las encuestas realizadas.</p>
+          <h5 class="card-title fw-bold">Mapa de registros</h5>
+          <p class="card-text text-muted small">Visualizar la ubicación georeferencial de las encuestas realizadas</p>
           <a href="/mapa" class="btn btn-success w-100 py-2">Ver Mapa</a>
         </div>
       </div>
     </div>
 
-    <div class="col-12 col-md-6 col-lg-4" id="admin-card">
+    <div class="col-12 col-md-6 col-lg-4" id="admin-card" th:if="${usuarioLogueado != null and usuarioLogueado.rol == 'ADMIN'}">
       <div class="card h-100 shadow-sm border-0 text-center p-3">
         <div class="card-body">
           <div class="display-4 text-warning mb-3">
             <i class="bi bi-people"></i>
           </div>
-          <h5 class="card-title fw-bold">Usuarios y Roles</h5>
-          <p class="card-text text-muted small">Administrar el personal de apoyo y asignar permisos de acceso.</p>
+          <h5 class="card-title fw-bold">Usuarios y roles</h5>
+          <p class="card-text text-muted small">Administrar el personal de apoyo y asignar permisos de acceso</p>
           <a href="/usuarios" class="btn btn-warning w-100 py-2 text-white">Gestionar</a>
         </div>
       </div>
@@ -75,9 +75,41 @@
           <div class="display-4 text-info mb-3">
             <i class="bi bi-card-list"></i>
           </div>
-          <h5 class="card-title fw-bold">Formularios Registrados</h5>
-          <p class="card-text text-muted small">Consultar las encuestas guardadas, revisar datos y gestionarlas.</p>
+          <h5 class="card-title fw-bold">Formularios registrados</h5>
+          <p class="card-text text-muted small">Consultar las encuestas guardadas, revisar datos y gestionarlas</p>
           <a href="/formularios" class="btn btn-info w-100 py-2 text-white">Ver Formularios</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA CLIENTE REST -->
+    <div class="col-12 col-md-6 col-lg-4" th:if="${usuarioLogueado != null and usuarioLogueado.rol == 'ADMIN'}">
+      <div class="card h-100 shadow-sm border-0 text-center p-3">
+        <div class="card-body">
+          <div class="display-4 text-secondary mb-3">
+            <i class="bi bi-cloud-arrow-up"></i>
+          </div>
+          <h5 class="card-title fw-bold">Cliente REST</h5>
+          <p class="card-text text-muted small">
+            Gestionar formularios mediante la API REST con autenticación JWT
+          </p>
+          <a href="/clienteRest" class="btn btn-secondary w-100 py-2">Abrir</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA CLIENTE GRPC -->
+    <div class="col-12 col-md-6 col-lg-4" th:if="${usuarioLogueado != null and usuarioLogueado.rol == 'ADMIN'}">
+      <div class="card h-100 shadow-sm border-0 text-center p-3">
+        <div class="card-body">
+          <div class="display-4 text-dark mb-3">
+            <i class="bi bi-lightning-charge"></i>
+          </div>
+          <h5 class="card-title fw-bold">Cliente gRPC</h5>
+          <p class="card-text text-muted small">
+            Gestionar formularios mediante el servicio gRPC
+          </p>
+          <a href="/clienteGrpc" class="btn btn-dark w-100 py-2">Abrir</a>
         </div>
       </div>
     </div>
@@ -89,7 +121,7 @@
       <div class="alert alert-info d-flex align-items-center shadow-sm" role="alert">
         <i class="bi bi-cloud-arrow-up-fill fs-3 me-3"></i>
         <div>
-          <h6 class="mb-0 fw-bold">Estado de Sincronización</h6>
+          <h6 class="mb-0 fw-bold">ESTADO DE SINCRONIZACIÓN</h6>
           <small id="sync-status">Tienes 0 encuestas pendientes de subir al servidor.</small>
         </div>
       </div>
