@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.google.protobuf' version '0.9.5' //plugin para incluir la compilación de gRPC
 }
 
 group = 'org.example'
@@ -44,14 +45,43 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
     // gRPC
-    implementation("io.grpc:grpc-netty-shaded:1.64.0")
-    implementation("io.grpc:grpc-protobuf:1.64.0")
-    implementation("io.grpc:grpc-stub:1.64.0")
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.80.0'
+    implementation 'io.grpc:grpc-protobuf:1.80.0'
+    implementation 'io.grpc:grpc-stub:1.80.0'
+    implementation 'com.google.protobuf:protobuf-java:3.25.3'
     compileOnly("org.apache.tomcat:annotations-api:6.0.53")
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.80.0"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/proto'
+        }
+    }
+}
+
+tasks.named('processResources') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 test {

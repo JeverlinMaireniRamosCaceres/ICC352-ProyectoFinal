@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente gRPC</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/estilosGrpc.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dark shadow-sm">
+    <div class="container-fluid">
+        <span class="navbar-brand h1 mb-0">
+            <i class="bi bi-lightning-charge-fill me-2"></i> Cliente gRPC
+        </span>
+        <a href="/index" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-house-door"></i> Inicio
+        </a>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div id="mensaje" class="alert d-none" role="alert"></div>
+
+    <div class="row g-4">
+        <!-- Formulario -->
+        <div class="col-12 col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title text-primary mb-4">
+                        <i class="bi bi-file-earmark-plus me-2"></i>Crear formulario por gRPC
+                    </h4>
+
+                    <form id="grpcForm">
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-bold">Nombre</label>
+                            <input type="text" class="form-control form-control-lg" id="nombre" placeholder="Nombre del encuestado" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="apellido" class="form-label fw-bold">Apellido</label>
+                            <input type="text" class="form-control form-control-lg" id="apellido" placeholder="Apellido del encuestado">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sector" class="form-label fw-bold">Sector</label>
+                            <input type="text" class="form-control form-control-lg" id="sector" placeholder="Sector o comunidad" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nivelEscolar" class="form-label fw-bold">Nivel escolar</label>
+                            <select class="form-select form-select-lg" id="nivelEscolar" required>
+                                <option value="" selected disabled>Seleccione nivel...</option>
+                                <option value="Básico">Básico</option>
+                                <option value="Medio">Medio</option>
+                                <option value="Grado Universitario">Grado Universitario</option>
+                                <option value="Postgrado">Postgrado</option>
+                                <option value="Doctorado">Doctorado</option>
+                            </select>
+                        </div>
+
+                        <div class="alert alert-light border d-flex align-items-center mb-4">
+                            <i class="bi bi-geo-alt-fill text-danger fs-4 me-3"></i>
+                            <div>
+                                <small class="text-muted d-block">Ubicación Georeferencial:</small>
+                                <span id="geo-status" class="fw-bold text-dark">Detectando GPS...</span>
+                            </div>
+                            <input type="hidden" id="latitud">
+                            <input type="hidden" id="longitud">
+                        </div>
+
+                        <div class="mb-4 text-center">
+                            <label class="form-label fw-bold d-block mb-3">Foto de Evidencia</label>
+
+                            <div class="camera-container shadow-sm mb-3">
+                                <video id="webcam" autoplay playsinline></video>
+                                <canvas id="canvas"></canvas>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary btn-sm px-4" onclick="tomarFoto()">
+                                <i class="bi bi-camera-fill me-2"></i> Capturar Foto
+                            </button>
+
+                            <div id="preview-container" class="mt-2" style="display:none;">
+                                <span class="badge bg-success-subtle text-success border border-success">
+                                    <i class="bi bi-check2-circle"></i> Foto lista
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg shadow">
+                                <i class="bi bi-cloud-upload me-2"></i>Crear por gRPC
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listado -->
+        <div class="col-12 col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                        <h4 class="card-title text-primary mb-0">
+                            <i class="bi bi-card-list me-2"></i>Formularios del usuario
+                        </h4>
+                        <button id="btn-cargar-formularios" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Recargar
+                        </button>
+                    </div>
+
+                    <div id="grpc-listado" class="row g-3">
+                        <div class="col-12">
+                            <div class="estado-vacio text-center text-muted">
+                                Presione “Recargar” para consultar formularios vía gRPC.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/webcam-easy.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/clienteGrpc.js"></script>
+
+</body>
+</html>
