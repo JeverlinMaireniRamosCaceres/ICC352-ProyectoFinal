@@ -47,7 +47,15 @@ message ListarFormulariosPorUsuarioResponse {
   repeated FormularioMessage formularios = 1;
 }
 
+message ListarTodosFormulariosRequest {
+}
+
+message ListarTodosFormulariosResponse {
+  repeated FormularioMessage formularios = 1;
+}
+
 service FormularioGrpcService {
   rpc CrearFormulario (CrearFormularioRequest) returns (CrearFormularioResponse);
   rpc ListarFormulariosPorUsuario (ListarFormulariosPorUsuarioRequest) returns (ListarFormulariosPorUsuarioResponse);
+  rpc ListarTodosFormularios (ListarTodosFormulariosRequest) returns (ListarTodosFormulariosResponse);
 }
