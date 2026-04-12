@@ -11,9 +11,18 @@ import util.JWTUtil;
 
 import java.util.Map;
 
+import grpc.GrpcServer;
+
 public class Main {
 
     public static void main(String[] args) {
+
+        try {
+            GrpcServer grpcServer = new GrpcServer();
+            grpcServer.iniciar();
+        } catch (Exception e) {
+            System.out.println("Error al iniciar servidor gRPC: " + e.getMessage());
+        }
 
         var app = Javalin.create(config -> {
 
@@ -75,6 +84,7 @@ public class Main {
             // CONTROLADORES
             AuthControlador authControlador = new AuthControlador();
             FormularioControlador formularioControlador = new FormularioControlador();
+            ClienteGrpcControlador clienteGrpcControlador = new ClienteGrpcControlador();
 
             // LOGIN
             config.routes.post("/auth/login", authControlador::login);
@@ -84,6 +94,7 @@ public class Main {
 
             config.routes.get("/formularios", ctx -> {
                 ctx.render("templates/formularios.html"); });
+
 
             // Dirigir a formularios sincronizados y mostrarlos
             config.routes.get("/formularios/sincronizados", ctx -> {
@@ -367,6 +378,12 @@ public class Main {
                     throw new io.javalin.http.ForbiddenResponse("El token no es valido o expiro");
                 }
             });
+
+            //GRPC
+            //
+            config.routes.get("/clienteGrpc", clienteGrpcControlador::vista);
+            config.routes.get("/grpc/formularios", clienteGrpcControlador::listarPorUsuario);
+            config.routes.post("/grpc/formularios", clienteGrpcControlador::crear);
 
 
         }).start();

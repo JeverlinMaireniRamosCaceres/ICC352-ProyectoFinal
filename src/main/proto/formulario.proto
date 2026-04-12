@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpc";
+option java_outer_classname = "FormularioProto";
+
+package formulario;
+
+message PosicionMessage {
+  double latitud = 1;
+  double longitud = 2;
+}
+
+message FormularioMessage {
+  string id = 1;
+  string nombre = 2;
+  string apellido = 3;
+  string sector = 4;
+  string nivelEscolar = 5;
+  string usuarioId = 6;
+  PosicionMessage posicion = 7;
+  string foto = 8;
+  string fechaRegistro = 9;
+  bool sincronizado = 10;
+}
+
+message CrearFormularioRequest {
+  string nombre = 1;
+  string apellido = 2;
+  string sector = 3;
+  string nivelEscolar = 4;
+  string usuarioId = 5;
+  PosicionMessage posicion = 6;
+  string foto = 7;
+}
+
+message CrearFormularioResponse {
+  string mensaje = 1;
+  string id = 2;
+}
+
+message ListarFormulariosPorUsuarioRequest {
+  string usuarioId = 1;
+}
+
+message ListarFormulariosPorUsuarioResponse {
+  repeated FormularioMessage formularios = 1;
+}
+
+service FormularioGrpcService {
+  rpc CrearFormulario (CrearFormularioRequest) returns (CrearFormularioResponse);
+  rpc ListarFormulariosPorUsuario (ListarFormulariosPorUsuarioRequest) returns (ListarFormulariosPorUsuarioResponse);
+}
