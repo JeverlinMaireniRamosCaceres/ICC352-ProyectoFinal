@@ -22,14 +22,15 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    // Ignorar extensiones de Chrome y peticiones no HTTP
     if (!event.request.url.startsWith('http')) return;
     if (event.request.method !== 'GET') return;
+    if (event.request.url.includes('/sync')) return;
+    if (event.request.url.includes('/estadoConexion')) return;
 
     event.respondWith(
         fetch(event.request)
             .then(response => {
-                // Solo cachear respuestas válidas
+
                 if (!response || response.status !== 200 || response.type === 'opaque') {
                     return response;
                 }

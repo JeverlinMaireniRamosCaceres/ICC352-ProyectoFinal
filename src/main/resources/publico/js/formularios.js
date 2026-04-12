@@ -317,13 +317,6 @@ worker.onmessage = function(e) {
 };
 
 function sincronizarAutomatico() {
-    const formularios = obtenerFormulariosLocales();
-    const pendientes = formularios.filter(f => f.seleccionado && !f.sincronizado);
-
-    console.log('Pendientes a sincronizar:', pendientes.length);
-
-    if (pendientes.length === 0) return;
-
     const protocolo = window.location.protocol === "https:" ? "wss" : "ws";
     const url = `${protocolo}://${window.location.host}/sync`;
     console.log('Conectando WebSocket a:', url);
@@ -331,7 +324,16 @@ function sincronizarAutomatico() {
     const ws = new WebSocket(url);
 
     ws.onopen = function() {
-        console.log('WebSocket abierto');
+        const formularios = obtenerFormulariosLocales();
+        const pendientes = formularios.filter(f => f.seleccionado && !f.sincronizado);
+
+        console.log('Pendientes a sincronizar:', pendientes.length);
+
+        if (pendientes.length === 0) {
+            ws.close();
+            return;
+        }
+
         pendientes.forEach(f => ws.send(JSON.stringify(f)));
     };
 
@@ -354,3 +356,8 @@ function sincronizarAutomatico() {
         console.log('WebSocket cerrado:', e.code, e.reason);
     };
 }
+
+window.addEventListener('online', function() {
+    console.log('Volvió la conexión - sincronizando...');
+    setTimeout(() => sincronizarAutomatico(), 1000);
+});
