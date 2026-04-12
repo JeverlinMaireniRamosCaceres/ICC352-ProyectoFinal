@@ -80,7 +80,7 @@ function cargarPendientes() {
                     <p class="mb-2"><strong>Latitud:</strong> ${formulario.posicion?.latitud ?? ""}</p>
                     <p class="mb-2"><strong>Longitud:</strong> ${formulario.posicion?.longitud ?? ""}</p>
 
-                     ${formulario.foto ? `
+                    ${formulario.foto ? `
                         <div class="mt-2 mb-2">
                             <img src="${formulario.foto}" alt="Foto del registro" 
                                  class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
@@ -116,7 +116,7 @@ async function cargarSincronizados() {
     `;
 
     try {
-        const response = await fetch("/api/formularios");
+        const response = await fetch("/formularios/sincronizados");
         const formularios = await response.json();
 
         if (!response.ok) {
@@ -156,14 +156,13 @@ async function cargarSincronizados() {
                         <p class="mb-2"><strong>Fecha:</strong> ${formulario.fechaRegistro || ""}</p>
                         <p class="mb-2"><strong>Latitud:</strong> ${formulario.latitud ?? ""}</p>
                         <p class="mb-2"><strong>Longitud:</strong> ${formulario.longitud ?? ""}</p>
-                         
-                         ${formulario.foto ? `
+
+                        ${formulario.foto ? `
                             <div class="mt-2 mb-2">
                                 <img src="${formulario.foto}" alt="Foto del registro" 
                                      class="img-fluid rounded" style="max-height: 150px; width: 100%; object-fit: cover;">
                             </div>
-                        ` : ''}   
-                    
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -269,7 +268,7 @@ async function sincronizarSeleccionados() {
 
     for (const formulario of seleccionados) {
         try {
-            const response = await fetch("/api/formularios", {
+            const response = await fetch("/formularios/sincronizar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -318,28 +317,30 @@ worker.onmessage = function(e) {
 
 function sincronizarAutomatico() {
     const formularios = obtenerFormulariosLocales();
-    const seleccionados = formularios.filter(f => f.seleccionado && !f.sincronizado);
+    const pendientes = formularios.filter(f => !f.sincronizado);
 
-    if (seleccionados.length === 0) return;
+    if (pendientes.length === 0) return;
 
-    const ws = new WebSocket('ws://localhost:7000/sync');
+    const protocolo = window.location.protocol === "https:" ? "wss" : "ws";
+    const ws = new WebSocket(`${protocolo}://${window.location.host}/sync`);
 
     ws.onopen = function() {
-        seleccionados.forEach(f => ws.send(JSON.stringify(f)));
+        pendientes.forEach(f => ws.send(JSON.stringify(f)));
     };
 
     ws.onmessage = function(e) {
         const respuesta = JSON.parse(e.data);
-        if (respuesta.estado === 'OK') {
 
+        if (respuesta.estado === "OK") {
             const restantes = obtenerFormulariosLocales()
                 .filter(f => f.idLocal !== respuesta.idLocal);
+
             guardarFormulariosLocales(restantes);
             cargarPendientes();
         }
     };
 
     ws.onerror = function() {
-        console.log('Error en WebSocket');
+        console.log("Error en WebSocket");
     };
 }

@@ -36,6 +36,9 @@ public class Main {
 
             // ---------- ENDPOINTS ---------
 
+            // Obtener la conexion (si esta online, offline)
+            config.routes.get("/estadoConexion", ctx -> ctx.json(Map.of("estado", "ok")));
+
             // Redireccion registro
             config.routes.get("/formulario", ctx -> {
                 ctx.render("templates/formulario.html");
@@ -77,13 +80,104 @@ public class Main {
             config.routes.get("/formularios", ctx -> {
                 ctx.render("templates/formularios.html"); });
 
-            config.routes.post("/api/formularios", formularioControlador::crear);
+            // Dirigir a formularios sincronizados y mostrarlos
+            config.routes.get("/formularios/sincronizados", ctx -> {
 
-            config.routes.get("/api/formularios", formularioControlador::listarTodos);
-            config.routes.get("/api/formularios/{id}", formularioControlador::buscarPorId);
-            config.routes.get("/api/formularios/usuario/{usuarioId}", formularioControlador::listarPorUsuario);
-            config.routes.put("/api/formularios/{id}", formularioControlador::actualizar);
-            config.routes.delete("/api/formularios/{id}", formularioControlador::eliminar);
+                Usuario usuario = ctx.sessionAttribute("usuario");
+
+                if (usuario == null) {
+                    ctx.status(401).json(Map.of("error", "No autenticado"));
+                    return;
+                }
+
+                var formularios = FormularioServicio.getInstancia().listarTodos();
+
+                UsuarioServicio usuarioServicio = UsuarioServicio.getInstancia();
+
+                var respuesta = formularios.stream().map(formulario -> {
+                    Map<String, Object> item = new java.util.LinkedHashMap<>();
+
+                    String usuarioNombre = "No disponible";
+                    if (formulario.getUsuarioId() != null) {
+                        Usuario u = usuarioServicio.buscarPorId(formulario.getUsuarioId());
+                        if (u != null) usuarioNombre = u.getNombre();
+                    }
+
+                    item.put("id", formulario.getId().toString());
+                    item.put("nombre", formulario.getNombre());
+                    item.put("apellido", formulario.getApellido());
+                    item.put("sector", formulario.getSector());
+                    item.put("nivelEscolar", formulario.getNivelEscolar());
+                    item.put("usuarioNombre", usuarioNombre);
+                    item.put("foto", formulario.getFoto());
+                    item.put("fechaRegistro", formulario.getFechaRegistro().toString());
+                    item.put("latitud", formulario.getPosicion().getLatitud());
+                    item.put("longitud", formulario.getPosicion().getLongitud());
+
+                    return item;
+                }).toList();
+
+                ctx.json(respuesta);
+            });
+
+            // Dirigir a sincronizar y mostrar los formularios pendientes de sincronizar
+            config.routes.post("/formularios/sincronizar", ctx -> {
+                try {
+                    Map<String, Object> body = ctx.bodyAsClass(Map.class);
+
+                    String nombre = (String) body.get("nombre");
+                    String apellido = (String) body.get("apellido");
+                    String sector = (String) body.get("sector");
+                    String nivelEscolar = (String) body.get("nivelEscolar");
+                    String foto = (String) body.get("foto");
+                    String idLocal = (String) body.get("idLocal");
+
+                    Map<String, Object> posicionMap = (Map<String, Object>) body.get("posicion");
+
+                    double latitud = 0;
+                    double longitud = 0;
+
+                    if (posicionMap != null) {
+                        latitud = Double.parseDouble(posicionMap.get("latitud").toString());
+                        longitud = Double.parseDouble(posicionMap.get("longitud").toString());
+                    }
+
+                    Posicion posicion = new Posicion(latitud, longitud);
+
+                    Usuario usuario = ctx.sessionAttribute("usuario");
+                    String usuarioId = "";
+
+                    if (usuario != null && usuario.getId() != null) {
+                        usuarioId = usuario.getId().toString();
+                    }
+
+                    Formulario formulario = new Formulario(
+                            nombre,
+                            apellido,
+                            sector,
+                            nivelEscolar,
+                            usuarioId,
+                            posicion,
+                            foto
+                    );
+
+                    formulario.setIdLocal(idLocal);
+
+                    FormularioServicio.getInstancia().guardar(formulario);
+
+                    ctx.status(201).json(Map.of(
+                            "mensaje", "Formulario sincronizado correctamente",
+                            "idLocal", idLocal
+                    ));
+
+                } catch (Exception e) {
+                    ctx.status(400).json(Map.of(
+                            "error", "Error al sincronizar formulario: " + e.getMessage()
+                    ));
+                }
+            });
+
+
 
             // CRUD USUARIO
 
@@ -180,6 +274,40 @@ public class Main {
                 UsuarioServicio.getInstancia().eliminar(id);
 
                 ctx.redirect("/usuarios");
+            });
+
+            // MAPA
+            // Obtener datos para el mapa
+            config.routes.get("/mapa/datos", ctx -> {
+                var formularios = FormularioServicio.getInstancia().listarTodos();
+                UsuarioServicio usuarioServicio = UsuarioServicio.getInstancia();
+
+                var respuesta = formularios.stream().map(formulario -> {
+                    Map<String, Object> item = new java.util.LinkedHashMap<>();
+
+                    String usuarioNombre = "No disponible";
+                    if (formulario.getUsuarioId() != null && !formulario.getUsuarioId().isEmpty()) {
+                        Usuario usuario = usuarioServicio.buscarPorId(formulario.getUsuarioId());
+                        if (usuario != null) {
+                            usuarioNombre = usuario.getNombre();
+                        }
+                    }
+
+                    item.put("id", formulario.getId() != null ? formulario.getId().toString() : "");
+                    item.put("nombre", formulario.getNombre() != null ? formulario.getNombre() : "");
+                    item.put("apellido", formulario.getApellido() != null ? formulario.getApellido() : "");
+                    item.put("sector", formulario.getSector() != null ? formulario.getSector() : "");
+                    item.put("nivelEscolar", formulario.getNivelEscolar() != null ? formulario.getNivelEscolar() : "");
+                    item.put("usuarioNombre", usuarioNombre);
+                    item.put("foto", formulario.getFoto() != null ? formulario.getFoto() : "");
+                    item.put("fechaRegistro", formulario.getFechaRegistro() != null ? formulario.getFechaRegistro().toString() : "");
+                    item.put("latitud", formulario.getPosicion() != null ? formulario.getPosicion().getLatitud() : 0);
+                    item.put("longitud", formulario.getPosicion() != null ? formulario.getPosicion().getLongitud() : 0);
+
+                    return item;
+                }).toList();
+
+                ctx.json(respuesta);
             });
 
             // ----- WEBSOCKET -------
