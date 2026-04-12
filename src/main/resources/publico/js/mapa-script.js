@@ -23,7 +23,7 @@
         const mensaje = document.getElementById("mensaje-mapa");
 
         try {
-            const response = await fetch("/api/formularios");
+            const response = await fetch("/mapa/datos");
             const formularios = await response.json();
 
             if (!response.ok) {
