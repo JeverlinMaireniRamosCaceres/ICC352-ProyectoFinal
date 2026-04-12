@@ -312,6 +312,7 @@ public class Main {
 
             // ----- WEBSOCKET -------
             config.routes.ws("/sync", ws -> {
+                ws.onConnect(ctx -> ctx.session.setMaxTextMessageSize(10 * 1024 * 1024));
                 ws.onMessage(ctx -> {
                     try {
                         Map<String, Object> body = ctx.messageAsClass(Map.class);
