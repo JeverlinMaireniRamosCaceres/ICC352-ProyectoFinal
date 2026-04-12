@@ -51,7 +51,12 @@ public class Main {
 
             // Redireccion index
             config.routes.get("/index", ctx -> {
-                ctx.render("templates/index.html", Map.of("usuarioLogueado", ctx.sessionAttribute("usuario")));
+                Usuario usuario = ctx.sessionAttribute("usuario");
+                if (usuario == null) {
+                    ctx.redirect("/");
+                    return;
+                }
+                ctx.render("templates/index.html", Map.of("usuarioLogueado", usuario));
             });
 
             // Redireccion mapa
