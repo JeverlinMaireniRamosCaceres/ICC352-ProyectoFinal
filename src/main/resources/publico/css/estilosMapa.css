@@ -32,18 +32,22 @@ body {
 }
 
 /* Panel lateral */
-.col-12.col-md-3.bg-white {
+.panel-lateral {
     background-color: #ffffff;
     border-left: 1px solid #dee2e6;
-}
-
-.col-12.col-md-3 .p-3 {
     height: calc(100vh - 62px);
     display: flex;
     flex-direction: column;
 }
 
-.col-12.col-md-3 h5 {
+.panel-lateral .p-3 {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.panel-lateral h5 {
     color: #00447b;
     font-weight: 700;
     margin-bottom: 1rem;
@@ -53,6 +57,7 @@ body {
 #lista-puntos {
     overflow-y: auto;
     flex: 1;
+    min-height: 0;
     padding-right: 2px;
 }
 
@@ -82,7 +87,6 @@ body {
     font-size: 0.8rem;
 }
 
-/* Scroll bonito */
 #lista-puntos::-webkit-scrollbar {
     width: 8px;
 }
@@ -135,13 +139,14 @@ body {
         height: 50vh;
     }
 
-    .col-12.col-md-3.bg-white {
+    .panel-lateral {
+        height: 40vh;
         border-left: none;
         border-top: 1px solid #dee2e6;
     }
 
-    .col-12.col-md-3 .p-3 {
-        height: 40vh;
+    .panel-lateral .p-3 {
+        height: 100%;
         padding: 1rem;
     }
 
@@ -163,11 +168,11 @@ body {
         height: 45vh;
     }
 
-    .col-12.col-md-3 .p-3 {
+    .panel-lateral {
         height: 42vh;
     }
 
-    .col-12.col-md-3 h5 {
+    .panel-lateral h5 {
         font-size: 1rem;
     }
 
