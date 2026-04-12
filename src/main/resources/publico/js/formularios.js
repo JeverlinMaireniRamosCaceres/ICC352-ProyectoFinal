@@ -310,6 +310,7 @@ async function sincronizarSeleccionados() {
 const worker = new Worker('/js/sincronizarWorker.js');
 
 worker.onmessage = function(e) {
+    console.log('Mensaje del Worker:', e.data);
     if (e.data.tipo === 'CONECTADO') {
         sincronizarAutomatico();
     }
@@ -317,30 +318,39 @@ worker.onmessage = function(e) {
 
 function sincronizarAutomatico() {
     const formularios = obtenerFormulariosLocales();
-    const pendientes = formularios.filter(f => !f.sincronizado);
+    const pendientes = formularios.filter(f => f.seleccionado && !f.sincronizado);
+
+    console.log('Pendientes a sincronizar:', pendientes.length);
 
     if (pendientes.length === 0) return;
 
     const protocolo = window.location.protocol === "https:" ? "wss" : "ws";
-    const ws = new WebSocket(`${protocolo}://${window.location.host}/sync`);
+    const url = `${protocolo}://${window.location.host}/sync`;
+    console.log('Conectando WebSocket a:', url);
+
+    const ws = new WebSocket(url);
 
     ws.onopen = function() {
+        console.log('WebSocket abierto');
         pendientes.forEach(f => ws.send(JSON.stringify(f)));
     };
 
     ws.onmessage = function(e) {
+        console.log('Respuesta del servidor:', e.data);
         const respuesta = JSON.parse(e.data);
-
         if (respuesta.estado === "OK") {
             const restantes = obtenerFormulariosLocales()
                 .filter(f => f.idLocal !== respuesta.idLocal);
-
             guardarFormulariosLocales(restantes);
             cargarPendientes();
         }
     };
 
-    ws.onerror = function() {
-        console.log("Error en WebSocket");
+    ws.onerror = function(e) {
+        console.log('Error WebSocket:', e);
+    };
+
+    ws.onclose = function(e) {
+        console.log('WebSocket cerrado:', e.code, e.reason);
     };
 }
