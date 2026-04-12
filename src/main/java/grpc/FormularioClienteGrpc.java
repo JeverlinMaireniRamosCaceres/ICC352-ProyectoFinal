@@ -54,6 +54,13 @@ public class FormularioClienteGrpc {
         return stub.crearFormulario(request);
     }
 
+    public ListarTodosFormulariosResponse listarTodos() {
+        ListarTodosFormulariosRequest request =
+                ListarTodosFormulariosRequest.newBuilder().build();
+
+        return stub.listarTodosFormularios(request);
+    }
+
     public void cerrar() {
         if (channel != null && !channel.isShutdown()) {
             channel.shutdown();

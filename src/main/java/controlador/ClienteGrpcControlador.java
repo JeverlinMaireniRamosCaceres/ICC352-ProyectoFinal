@@ -1,10 +1,7 @@
 package controlador;
 
 import entidades.Usuario;
-import grpc.CrearFormularioResponse;
-import grpc.FormularioClienteGrpc;
-import grpc.FormularioMessage;
-import grpc.ListarFormulariosPorUsuarioResponse;
+import grpc.*;
 import io.javalin.http.Context;
 
 import java.util.ArrayList;
@@ -29,35 +26,56 @@ public class ClienteGrpcControlador {
         FormularioClienteGrpc cliente = new FormularioClienteGrpc();
 
         try {
-            ListarFormulariosPorUsuarioResponse response =
-                    cliente.listarPorUsuario(usuario.getId().toString());
-
             List<Map<String, Object>> resultado = new ArrayList<>();
 
-            for (FormularioMessage formulario : response.getFormulariosList()) {
-                Map<String, Object> item = new LinkedHashMap<>();
-                item.put("id", formulario.getId());
-                item.put("nombre", formulario.getNombre());
-                item.put("apellido", formulario.getApellido());
-                item.put("sector", formulario.getSector());
-                item.put("nivelEscolar", formulario.getNivelEscolar());
-                item.put("usuarioId", formulario.getUsuarioId());
-                item.put("foto", formulario.getFoto());
-                item.put("fechaRegistro", formulario.getFechaRegistro());
-                item.put("sincronizado", formulario.getSincronizado());
-                item.put("latitud", formulario.getPosicion().getLatitud());
-                item.put("longitud", formulario.getPosicion().getLongitud());
-                resultado.add(item);
+            if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
+                ListarTodosFormulariosResponse response = cliente.listarTodos();
+
+                for (FormularioMessage formulario : response.getFormulariosList()) {
+                    Map<String, Object> item = new LinkedHashMap<>();
+                    item.put("id", formulario.getId());
+                    item.put("nombre", formulario.getNombre());
+                    item.put("apellido", formulario.getApellido());
+                    item.put("sector", formulario.getSector());
+                    item.put("nivelEscolar", formulario.getNivelEscolar());
+                    item.put("usuarioId", formulario.getUsuarioId());
+                    item.put("foto", formulario.getFoto());
+                    item.put("fechaRegistro", formulario.getFechaRegistro());
+                    item.put("sincronizado", true);
+                    item.put("latitud", formulario.getPosicion().getLatitud());
+                    item.put("longitud", formulario.getPosicion().getLongitud());
+                    resultado.add(item);
+                }
+            } else {
+                ListarFormulariosPorUsuarioResponse response =
+                        cliente.listarPorUsuario(usuario.getId().toString());
+
+                for (FormularioMessage formulario : response.getFormulariosList()) {
+                    Map<String, Object> item = new LinkedHashMap<>();
+                    item.put("id", formulario.getId());
+                    item.put("nombre", formulario.getNombre());
+                    item.put("apellido", formulario.getApellido());
+                    item.put("sector", formulario.getSector());
+                    item.put("nivelEscolar", formulario.getNivelEscolar());
+                    item.put("usuarioId", formulario.getUsuarioId());
+                    item.put("foto", formulario.getFoto());
+                    item.put("fechaRegistro", formulario.getFechaRegistro());
+                    item.put("sincronizado", formulario.getSincronizado());
+                    item.put("latitud", formulario.getPosicion().getLatitud());
+                    item.put("longitud", formulario.getPosicion().getLongitud());
+                    resultado.add(item);
+                }
             }
 
-            ctx.json(resultado);
+                ctx.json(resultado);
 
-        } catch (Exception e) {
-            ctx.status(500).json(Map.of("error", "Error al listar por gRPC: " + e.getMessage()));
-        } finally {
-            cliente.cerrar();
+            } catch(Exception e){
+                ctx.status(500).json(Map.of("error", "Error al listar por gRPC: " + e.getMessage()));
+            } finally{
+                cliente.cerrar();
+            }
         }
-    }
+
 
     @SuppressWarnings("unchecked")
     public void crear(Context ctx) {
