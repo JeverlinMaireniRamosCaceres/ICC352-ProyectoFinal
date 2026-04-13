@@ -18,57 +18,6 @@ public class FormularioControlador {
         this.formularioServicio = FormularioServicio.getInstancia();
     }
 
-    public void crear(Context ctx) {
-        try {
-            Usuario usuario = ctx.sessionAttribute("usuario");
-
-            if (usuario == null) {
-                ctx.status(401).json(Map.of("error", "Usuario no autenticado"));
-                return;
-            }
-
-            Map<String, Object> body = ctx.bodyAsClass(Map.class);
-
-            String nombre = (String) body.get("nombre");
-            String apellido = (String) body.get("apellido");
-            String sector = (String) body.get("sector");
-            String nivelEscolar = (String) body.get("nivelEscolar");
-            String foto = (String) body.get("foto");
-
-            Map<String, Object> posicionMap = (Map<String, Object>) body.get("posicion");
-
-            double latitud = 0;
-            double longitud = 0;
-
-            if (posicionMap != null) {
-                latitud = Double.parseDouble(posicionMap.get("latitud").toString());
-                longitud = Double.parseDouble(posicionMap.get("longitud").toString());
-            }
-
-            Posicion posicion = new Posicion(latitud, longitud);
-
-            Formulario formulario = new Formulario(
-                    nombre,
-                    apellido,
-                    sector,
-                    nivelEscolar,
-                    usuario.getId().toString(),
-                    posicion,
-                    foto
-            );
-
-            formularioServicio.guardar(formulario);
-
-            ctx.status(201).json(Map.of(
-                    "mensaje", "Formulario guardado correctamente",
-                    "id", formulario.getId().toString()
-            ));
-
-        } catch (Exception e) {
-            ctx.status(400).json(Map.of("error", "Error al guardar formulario: " + e.getMessage()));
-        }
-    }
-
     public void listarTodos(Context ctx) {
         try {
             List<Formulario> formularios = formularioServicio.listarTodos();
@@ -144,39 +93,6 @@ public class FormularioControlador {
         }
     }
 
-    public void listarPorUsuario(Context ctx) {
-        try {
-            String usuarioId = ctx.pathParam("usuarioId");
-            List<Formulario> formularios = formularioServicio.listarPorUsuarioId(usuarioId);
-
-            List<Map<String, Object>> respuesta = formularios.stream()
-                    .map(formulario -> {
-                        Map<String, Object> item = new java.util.LinkedHashMap<>();
-
-                        item.put("id", formulario.getId() != null ? formulario.getId().toString() : "");
-                        item.put("nombre", formulario.getNombre() != null ? formulario.getNombre() : "");
-                        item.put("apellido", formulario.getApellido() != null ? formulario.getApellido() : "");
-                        item.put("sector", formulario.getSector() != null ? formulario.getSector() : "");
-                        item.put("nivelEscolar", formulario.getNivelEscolar() != null ? formulario.getNivelEscolar() : "");
-                        item.put("usuarioId", formulario.getUsuarioId() != null ? formulario.getUsuarioId() : "");
-                        item.put("sincronizado", formulario.isSincronizado());
-                        item.put("fechaRegistro", formulario.getFechaRegistro() != null ? formulario.getFechaRegistro().toString() : "");
-                        item.put("latitud", formulario.getPosicion() != null ? formulario.getPosicion().getLatitud() : 0);
-                        item.put("longitud", formulario.getPosicion() != null ? formulario.getPosicion().getLongitud() : 0);
-                        item.put("foto", formulario.getFoto() != null ? formulario.getFoto() : "");
-
-                        return item;
-                    })
-                    .toList();
-
-            ctx.json(respuesta);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ctx.status(500).json(Map.of("error", "Error al listar formularios por usuario: " + e.getMessage()));
-        }
-    }
-
     public void actualizar(Context ctx) {
         try {
             String id = ctx.pathParam("id");
@@ -219,4 +135,5 @@ public class FormularioControlador {
 
         ctx.json(Map.of("mensaje", "Formulario eliminado correctamente"));
     }
+
 }
