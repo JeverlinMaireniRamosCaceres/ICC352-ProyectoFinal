@@ -83,7 +83,7 @@ public class Main {
 
             // CONTROLADORES
             AuthControlador authControlador = new AuthControlador();
-            FormularioControlador formularioControlador = new FormularioControlador();
+            // FormularioControlador formularioControlador = new FormularioControlador();
             FormularioRestControlador formularioRestControlador = new FormularioRestControlador();
             ClienteGrpcControlador clienteGrpcControlador = new ClienteGrpcControlador();
 
