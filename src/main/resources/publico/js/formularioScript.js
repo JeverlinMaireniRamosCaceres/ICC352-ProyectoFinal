@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarGeolocalizacion();
     iniciarCamara();
     configurarFormulario();
+    actualizarEstadoConexion();
 });
 
 function iniciarGeolocalizacion() {
@@ -121,3 +122,20 @@ function configurarFormulario() {
         }
     });
 }
+
+function actualizarEstadoConexion() {
+    const badge = document.getElementById("connection-badge");
+    if (!badge) return;
+    if (navigator.onLine) {
+        badge.textContent = "Online";
+        badge.classList.remove("bg-danger");
+        badge.classList.add("bg-success");
+    } else {
+        badge.textContent = "Offline";
+        badge.classList.remove("bg-success");
+        badge.classList.add("bg-danger");
+    }
+}
+
+window.addEventListener("online", actualizarEstadoConexion);
+window.addEventListener("offline", actualizarEstadoConexion);
