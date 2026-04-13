@@ -74,6 +74,7 @@ function cargarPendientes() {
                         ${formulario.nombre || ""} ${formulario.apellido || ""}
                     </h5>
 
+                    
                     <p class="mb-2"><strong>Sector:</strong> ${formulario.sector || ""}</p>
                     <p class="mb-2"><strong>Nivel Escolar:</strong> ${formulario.nivelEscolar || ""}</p>
                     <p class="mb-2"><strong>Fecha:</strong> ${formulario.fechaRegistro || ""}</p>
@@ -151,6 +152,7 @@ async function cargarSincronizados() {
                             ${formulario.nombre || ""} ${formulario.apellido || ""}
                         </h5>
 
+                        <p class="mb-2"><strong>Registrado por:</strong> ${formulario.usuarioNombre || "No disponible"}</p>
                         <p class="mb-2"><strong>Sector:</strong> ${formulario.sector || ""}</p>
                         <p class="mb-2"><strong>Nivel Escolar:</strong> ${formulario.nivelEscolar || ""}</p>
                         <p class="mb-2"><strong>Fecha:</strong> ${formulario.fechaRegistro || ""}</p>
