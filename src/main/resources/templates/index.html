@@ -82,8 +82,9 @@
       </div>
     </div>
 
-    <!-- TARJETA CLIENTE REST -->
-    <div class="col-12 col-md-6 col-lg-4" th:if="${usuarioLogueado != null and usuarioLogueado.rol == 'ADMIN'}">
+    <!-- TARJETA REST -->
+    <div class="col-12 col-md-6 col-lg-4"
+         th:if="${usuarioLogueado != null and (usuarioLogueado.rol == 'ADMIN' or usuarioLogueado.rol == 'ENCUESTADOR')}">
       <div class="card h-100 shadow-sm border-0 text-center p-3">
         <div class="card-body">
           <div class="display-4 text-secondary mb-3">

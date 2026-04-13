@@ -84,6 +84,7 @@ public class Main {
             // CONTROLADORES
             AuthControlador authControlador = new AuthControlador();
             FormularioControlador formularioControlador = new FormularioControlador();
+            FormularioRestControlador formularioRestControlador = new FormularioRestControlador();
             ClienteGrpcControlador clienteGrpcControlador = new ClienteGrpcControlador();
 
             // LOGIN
@@ -192,8 +193,6 @@ public class Main {
                     ));
                 }
             });
-
-
 
             // CRUD USUARIO
 
@@ -368,19 +367,41 @@ public class Main {
             config.routes.before("/api/*", ctx -> {
                 if (ctx.method().toString().equals("OPTIONS")) return;
 
+                String path = ctx.path();
+
+                if (path.equals("/api/auth/login")) {
+                    return;
+                }
+
                 String header = ctx.header("Authorization");
                 if (header == null || !header.startsWith("Bearer ")) {
                     throw new io.javalin.http.UnauthorizedResponse("Se requiere token");
                 }
 
                 String token = header.replace("Bearer ", "").trim();
-                if (!JWTUtil.esValido(token)) {
+
+                try {
+                    var claims = JWTUtil.validarToken(token);
+                    ctx.attribute("jwt-claims", claims);
+                } catch (Exception e) {
                     throw new io.javalin.http.ForbiddenResponse("El token no es valido o expiro");
                 }
             });
 
+            // API REST
+
+            config.routes.post("/api/auth/login", authControlador::login);
+
+            config.routes.get("/api/formularios/losDelUsuario", formularioRestControlador::listarMisFormularios);
+
+            config.routes.get("/api/formularios/email/{email}", formularioRestControlador::listarPorEmail);
+
+            config.routes.post("/api/formularios", formularioRestControlador::crear);
+
+            // CLIENTE REST
+            config.routes.get("/clienteRest", formularioRestControlador::vista);
+
             //GRPC
-            //
             config.routes.get("/clienteGrpc", clienteGrpcControlador::vista);
             config.routes.get("/grpc/formularios", clienteGrpcControlador::listarPorUsuario);
             config.routes.post("/grpc/formularios", clienteGrpcControlador::crear);

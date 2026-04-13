@@ -79,4 +79,16 @@ public class FormularioServicio {
 
         return true;
     }
+
+    public List<Formulario> listarPorUsuarioEmail(String email) {
+        UsuarioServicio usuarioServicio = UsuarioServicio.getInstancia();
+        var usuario = usuarioServicio.buscarPorEmail(email);
+
+        if (usuario == null || usuario.getId() == null) {
+            return List.of();
+        }
+
+        return listarPorUsuarioId(usuario.getId());
+    }
+
 }
