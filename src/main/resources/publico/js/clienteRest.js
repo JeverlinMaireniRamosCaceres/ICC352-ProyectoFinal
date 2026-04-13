@@ -125,11 +125,7 @@ function configurarLoginRest() {
             rolUsuario = data.rol || "";
             emailUsuario = email;
 
-            sessionStorage.setItem("tokenJwt", tokenJwt);
-            sessionStorage.setItem("rolUsuario", rolUsuario);
-            sessionStorage.setItem("emailUsuario", emailUsuario);
-
-            document.getElementById("tokenJwt").value = tokenJwt;
+            document.getElementById("tokenJwt").value = formatearToken(tokenJwt);
 
             const estadoToken = document.getElementById("estado-token");
             estadoToken.textContent = "Token activo";
@@ -273,9 +269,6 @@ async function cargarFormulariosRest() {
                 <div class="rest-card">
                     <div class="d-flex justify-content-between align-items-start gap-2">
                         <h6>${formulario.nombre || ""} ${formulario.apellido || ""}</h6>
-                        <span class="badge bg-success-subtle text-success border">
-                            REST OK
-                        </span>
                     </div>
 
                     <div class="rest-meta"><strong>Sector:</strong> ${formulario.sector || ""}</div>
@@ -314,4 +307,13 @@ function mostrarMensaje(tipo, texto) {
     mensaje.classList.add(`alert-${tipo}`);
     mensaje.classList.remove("d-none");
     mensaje.textContent = texto;
+}
+
+function formatearToken(token) {
+    if (!token) return "";
+
+    const inicio = token.substring(0, 20);
+    const final = token.substring(token.length - 10);
+
+    return `${inicio}...${final}`;
 }
