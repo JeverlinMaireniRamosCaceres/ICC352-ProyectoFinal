@@ -26,8 +26,12 @@ public class UsuarioServicio {
     }
 
     public Usuario buscarPorEmail(String email) {
+        if (email == null || email.isBlank()) {
+            return null;
+        }
+
         return datastore.find(Usuario.class)
-                .filter(dev.morphia.query.filters.Filters.eq("email", email))
+                .filter(dev.morphia.query.filters.Filters.eq("email", email.trim()))
                 .first();
     }
 

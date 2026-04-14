@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     iniciarCamara();
     configurarFormularioGrpc();
     configurarListadoGrpc();
+    actualizarVistaGrpcPorRol();
 });
 
 function iniciarGeolocalizacion() {
@@ -141,12 +142,35 @@ function configurarListadoGrpc() {
         boton.addEventListener("click", cargarFormulariosGrpc);
     }
 }
+function actualizarVistaGrpcPorRol() {
+    const bloqueEmailAdmin = document.getElementById("bloque-email-admin-grpc");
 
+    if (!bloqueEmailAdmin) return;
+
+    if (typeof rolUsuarioGrpc !== "undefined" && rolUsuarioGrpc === "ADMIN") {
+        bloqueEmailAdmin.style.display = "block";
+    } else {
+        bloqueEmailAdmin.style.display = "none";
+    }
+}
 async function cargarFormulariosGrpc() {
     const contenedor = document.getElementById("grpc-listado");
 
+    let url = "/grpc/formularios";
+
+    if (typeof rolUsuarioGrpc !== "undefined" && rolUsuarioGrpc === "ADMIN") {
+        const emailBusqueda = document.getElementById("emailBusquedaGrpc")?.value.trim();
+
+        if (!emailBusqueda) {
+            mostrarMensaje("danger", "Digite el correo del usuario para consultar sus formularios.");
+            return;
+        }
+
+        url += `?email=${encodeURIComponent(emailBusqueda)}`;
+    }
+
     try {
-        const response = await fetch("/grpc/formularios");
+        const response = await fetch(url);
         const formularios = await response.json();
 
         if (!response.ok) {
@@ -157,7 +181,7 @@ async function cargarFormulariosGrpc() {
             contenedor.innerHTML = `
                 <div class="col-12">
                     <div class="estado-vacio text-center text-muted">
-                        No hay formularios para este usuario.
+                        No hay formularios para mostrar.
                     </div>
                 </div>
             `;
@@ -192,6 +216,8 @@ async function cargarFormulariosGrpc() {
             contenedor.appendChild(item);
         });
 
+        mostrarMensaje("success", "Consulta realizada correctamente.");
+
     } catch (error) {
         console.error("Error al cargar formularios gRPC:", error);
 
@@ -202,6 +228,8 @@ async function cargarFormulariosGrpc() {
                 </div>
             </div>
         `;
+
+        mostrarMensaje("danger", error.message);
     }
 }
 

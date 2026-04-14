@@ -12,6 +12,8 @@ import java.util.Map;
 public class ClienteGrpcControlador {
 
     public void vista(Context ctx) {
+        Usuario usuario = ctx.sessionAttribute("usuario");
+        ctx.attribute("usuarioLogueado", usuario);
         ctx.render("templates/clienteGrpc.html");
     }
 
@@ -27,54 +29,46 @@ public class ClienteGrpcControlador {
 
         try {
             List<Map<String, Object>> resultado = new ArrayList<>();
+            ListarFormulariosResponse response;
 
             if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
-                ListarTodosFormulariosResponse response = cliente.listarTodos();
+                String emailBusqueda = ctx.queryParam("email");
 
-                for (FormularioMessage formulario : response.getFormulariosList()) {
-                    Map<String, Object> item = new LinkedHashMap<>();
-                    item.put("id", formulario.getId());
-                    item.put("nombre", formulario.getNombre());
-                    item.put("apellido", formulario.getApellido());
-                    item.put("sector", formulario.getSector());
-                    item.put("nivelEscolar", formulario.getNivelEscolar());
-                    item.put("usuarioId", formulario.getUsuarioId());
-                    item.put("foto", formulario.getFoto());
-                    item.put("fechaRegistro", formulario.getFechaRegistro());
-                    item.put("sincronizado", true);
-                    item.put("latitud", formulario.getPosicion().getLatitud());
-                    item.put("longitud", formulario.getPosicion().getLongitud());
-                    resultado.add(item);
+                if (emailBusqueda == null || emailBusqueda.isBlank()) {
+                    ctx.status(400).json(Map.of("error", "Debe indicar el correo del usuario a consultar."));
+                    return;
                 }
+
+                response = cliente.listarPorEmail(emailBusqueda);
+
             } else {
-                ListarFormulariosPorUsuarioResponse response =
-                        cliente.listarPorUsuario(usuario.getId().toString());
-
-                for (FormularioMessage formulario : response.getFormulariosList()) {
-                    Map<String, Object> item = new LinkedHashMap<>();
-                    item.put("id", formulario.getId());
-                    item.put("nombre", formulario.getNombre());
-                    item.put("apellido", formulario.getApellido());
-                    item.put("sector", formulario.getSector());
-                    item.put("nivelEscolar", formulario.getNivelEscolar());
-                    item.put("usuarioId", formulario.getUsuarioId());
-                    item.put("foto", formulario.getFoto());
-                    item.put("fechaRegistro", formulario.getFechaRegistro());
-                    item.put("sincronizado", formulario.getSincronizado());
-                    item.put("latitud", formulario.getPosicion().getLatitud());
-                    item.put("longitud", formulario.getPosicion().getLongitud());
-                    resultado.add(item);
-                }
+                response = cliente.listarPorUsuario(usuario.getId().toString());
             }
 
-                ctx.json(resultado);
-
-            } catch(Exception e){
-                ctx.status(500).json(Map.of("error", "Error al listar por gRPC: " + e.getMessage()));
-            } finally{
-                cliente.cerrar();
+            for (FormularioMessage formulario : response.getFormulariosList()) {
+                Map<String, Object> item = new LinkedHashMap<>();
+                item.put("id", formulario.getId());
+                item.put("nombre", formulario.getNombre());
+                item.put("apellido", formulario.getApellido());
+                item.put("sector", formulario.getSector());
+                item.put("nivelEscolar", formulario.getNivelEscolar());
+                item.put("usuarioId", formulario.getUsuarioId());
+                item.put("foto", formulario.getFoto());
+                item.put("fechaRegistro", formulario.getFechaRegistro());
+                item.put("sincronizado", true);
+                item.put("latitud", formulario.getPosicion().getLatitud());
+                item.put("longitud", formulario.getPosicion().getLongitud());
+                resultado.add(item);
             }
+
+            ctx.json(resultado);
+
+        } catch (Exception e) {
+            ctx.status(500).json(Map.of("error", "Error al listar por gRPC: " + e.getMessage()));
+        } finally {
+            cliente.cerrar();
         }
+    }
 
 
     @SuppressWarnings("unchecked")
@@ -129,4 +123,5 @@ public class ClienteGrpcControlador {
             cliente.cerrar();
         }
     }
+
 }
