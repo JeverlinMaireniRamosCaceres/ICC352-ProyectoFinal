@@ -1,7 +1,9 @@
 package grpc;
 
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
+
+import java.net.InetSocketAddress;
 
 public class FormularioClienteGrpc {
 
@@ -9,8 +11,8 @@ public class FormularioClienteGrpc {
     private final FormularioGrpcServiceGrpc.FormularioGrpcServiceBlockingStub stub;
 
     public FormularioClienteGrpc() {
-        this.channel = ManagedChannelBuilder
-                .forAddress("localhost", 50051)
+        this.channel = NettyChannelBuilder
+                .forAddress(new InetSocketAddress("localhost", 50051))
                 .usePlaintext()
                 .build();
 

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.google.protobuf' version '0.9.5' //plugin para incluir la compilación de gRPC
+    id 'com.gradleup.shadow' version '8.3.6'
 }
 
 group = 'org.example'
@@ -50,6 +51,7 @@ dependencies {
     implementation 'io.grpc:grpc-stub:1.80.0'
     implementation 'com.google.protobuf:protobuf-java:3.25.3'
     compileOnly("org.apache.tomcat:annotations-api:6.0.53")
+    implementation 'io.grpc:grpc-netty-shaded:1.65.0'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -86,4 +88,12 @@ tasks.named('processResources') {
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    archiveClassifier.set('all')
+    mergeServiceFiles()
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
 }

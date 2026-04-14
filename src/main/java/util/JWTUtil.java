@@ -9,11 +9,16 @@ import java.util.Date;
 
 public class JWTUtil {
 
-    private static final String SECRET = "proyectofinalICC352EncuestasEsmeryJeverlin";
     private static final long EXPIRACION = 1000 * 60 * 60 * 8;
 
     private static SecretKey getKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+        String secret = System.getenv("JWT_SECRET");
+
+        if (secret == null || secret.isBlank()) {
+            throw new RuntimeException("La variable JWT_SECRET no está definida");
+        }
+
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public static String generarToken(String email, String rol) {
