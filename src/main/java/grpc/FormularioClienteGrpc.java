@@ -17,7 +17,7 @@ public class FormularioClienteGrpc {
         this.stub = FormularioGrpcServiceGrpc.newBlockingStub(channel);
     }
 
-    public ListarFormulariosPorUsuarioResponse listarPorUsuario(String usuarioId) {
+    public ListarFormulariosResponse listarPorUsuario(String usuarioId) {
         ListarFormulariosPorUsuarioRequest request =
                 ListarFormulariosPorUsuarioRequest.newBuilder()
                         .setUsuarioId(usuarioId)
@@ -54,7 +54,7 @@ public class FormularioClienteGrpc {
         return stub.crearFormulario(request);
     }
 
-    public ListarTodosFormulariosResponse listarTodos() {
+    public ListarFormulariosResponse listarTodos() {
         ListarTodosFormulariosRequest request =
                 ListarTodosFormulariosRequest.newBuilder().build();
 
@@ -65,5 +65,14 @@ public class FormularioClienteGrpc {
         if (channel != null && !channel.isShutdown()) {
             channel.shutdown();
         }
+    }
+
+    public ListarFormulariosResponse listarPorEmail(String email) {
+        ListarFormulariosPorEmailUsuarioRequest request =
+                ListarFormulariosPorEmailUsuarioRequest.newBuilder()
+                        .setEmail(email != null ? email : "")
+                        .build();
+
+        return stub.listarFormulariosPorEmailUsuario(request);
     }
 }
