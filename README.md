@@ -27,6 +27,8 @@ https://jeverlinramos.me/
 Es necesario crear un archivo *.env* con las siguientes variables de entorno:
 - MONGO_URI = uriMongoDB
 - JWT_SECRET = claveSecretaJWT
+- PORT=7000
+- GRPC_PORT=50051
 
 Los valores de estas estarán en el reporte entregado en la PVA
 
