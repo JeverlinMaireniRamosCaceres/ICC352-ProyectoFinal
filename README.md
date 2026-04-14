@@ -25,11 +25,11 @@ https://jeverlinramos.me/
 
 ## Nota
 Es necesario crear un archivo *.env* con las siguientes variables de entorno:
-MONGO_URI = uriMongoDB
-JWT_SECRET = claveSecretaJWT
+- MONGO_URI = uriMongoDB
+- JWT_SECRET = claveSecretaJWT
 
 Los valores de estas estarán en el reporte entregado en la PVA
 
 ### Para ejecutar con Docker
 docker compose up -d --build
-La aplicación estará disponible en el puerto 7000
+#### La aplicación estará disponible en el puerto 7000
