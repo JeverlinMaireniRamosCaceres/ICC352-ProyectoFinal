@@ -11,7 +11,10 @@ public class MongoConexion {
 
     public static Datastore getDatastore() {
         if (datastore == null) {
-            String uri = "mongodb+srv://jeverlin:123@proyectofinal.o0qjost.mongodb.net/?retryWrites=true&w=majority&appName=ProyectoFinal";
+            String uri = System.getenv("MONGO_URI");
+            if (uri == null || uri.isBlank()) {
+                throw new RuntimeException("La variable MONGO_URI no está definida");
+            }
             MongoClient mongoClient = MongoClients.create(uri);
             datastore = Morphia.createDatastore(mongoClient, "encuestas");
         }
