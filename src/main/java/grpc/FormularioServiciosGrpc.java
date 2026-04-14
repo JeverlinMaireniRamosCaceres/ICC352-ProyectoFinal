@@ -89,46 +89,6 @@ public class FormularioServiciosGrpc extends FormularioGrpcServiceGrpc.Formulari
             responseObserver.onError(e);
         }
     }
-
-    @Override
-    public void listarTodosFormularios(ListarTodosFormulariosRequest request,
-                                       StreamObserver<ListarFormulariosResponse> responseObserver) {
-        try {
-            List<Formulario> formularios = formularioServicio.listarTodos();
-
-            ListarFormulariosResponse.Builder responseBuilder =
-                    ListarFormulariosResponse.newBuilder();
-
-            for (Formulario formulario : formularios) {
-                PosicionMessage posicionMessage = PosicionMessage.newBuilder()
-                        .setLatitud(formulario.getPosicion() != null ? formulario.getPosicion().getLatitud() : 0)
-                        .setLongitud(formulario.getPosicion() != null ? formulario.getPosicion().getLongitud() : 0)
-                        .build();
-
-                FormularioMessage formularioMessage = FormularioMessage.newBuilder()
-                        .setId(formulario.getId() != null ? formulario.getId().toString() : "")
-                        .setNombre(formulario.getNombre() != null ? formulario.getNombre() : "")
-                        .setApellido(formulario.getApellido() != null ? formulario.getApellido() : "")
-                        .setSector(formulario.getSector() != null ? formulario.getSector() : "")
-                        .setNivelEscolar(formulario.getNivelEscolar() != null ? formulario.getNivelEscolar() : "")
-                        .setUsuarioId(formulario.getUsuarioId() != null ? formulario.getUsuarioId() : "")
-                        .setPosicion(posicionMessage)
-                        .setFoto(formulario.getFoto() != null ? formulario.getFoto() : "")
-                        .setFechaRegistro(formulario.getFechaRegistro() != null ? formulario.getFechaRegistro().toString() : "")
-                        .setSincronizado(formulario.isSincronizado())
-                        .build();
-
-                responseBuilder.addFormularios(formularioMessage);
-            }
-
-            responseObserver.onNext(responseBuilder.build());
-            responseObserver.onCompleted();
-
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
-    }
-
     @Override
     public void listarFormulariosPorEmailUsuario(ListarFormulariosPorEmailUsuarioRequest request,
                                                  StreamObserver<ListarFormulariosResponse> responseObserver) {
